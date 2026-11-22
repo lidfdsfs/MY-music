@@ -2,6 +2,32 @@
 
 面向音乐爱好者的**无广告、轻量、本地优先**跨端音乐播放器：Android 原生版 + iOS 可用的 PWA 版，统一 QQ 音乐绿（#31C27C）视觉风格。核心是播放本身——搜索、播放、后台与锁屏控制、歌单导入、歌词，不做社交与推荐流。
 
+## 下载安装包（Android）
+
+| 项目 | 说明 |
+|---|---|
+| 版本 | v1.0（versionName 1.0，versionCode 1） |
+| 安装包 | [MY-music-v1.0.apk](https://github.com/lidfdsfs/MY-music/releases/download/v1.0/MY-music-v1.0.apk)（约 142 MB） |
+| 架构 | arm64-v8a（2017 年后的 64 位机型） |
+| 系统 | Android 7.0（minSdk 24）及以上 |
+| 签名 | 本机 debug keystore，可直接 sideload 安装，非上架用途 |
+
+安装包放在 [Releases · v1.0](https://github.com/lidfdsfs/MY-music/releases/tag/v1.0)，不进 git 仓库——Git 单文件上限 100 MB，142 MB 的 APK 只能走 Release 资产。
+
+首次打开后请在设置页自行填写曲库接口 / 高德 Key / AI Key，App 不内置任何音源与密钥。
+
+## 界面预览
+
+真机跑的就是 Release 里那个 `MY-music-v1.0.apk`（Android 15 上安装运行）：
+
+| 首页 | 播放页 | 搜索 |
+|---|---|---|
+| <img src="docs/screenshots/01-home.png" width="240"> | <img src="docs/screenshots/02-player.png" width="240"> | <img src="docs/screenshots/03-search.png" width="240"> |
+
+| 我的收藏 | 我的 | 设置 |
+|---|---|---|
+| <img src="docs/screenshots/04-library.png" width="240"> | <img src="docs/screenshots/05-profile.png" width="240"> | <img src="docs/screenshots/06-settings.png" width="240"> |
+
 ## 特性
 
 - 搜索、在线播放、后台播放与 MediaStyle 锁屏/通知卡片（封面 + 进度 + 上/下一首）
@@ -25,6 +51,7 @@ app/                     Android 原生版（Kotlin + Jetpack Compose）
  ├─ src/main/jniLibs/     MNN / libllm 等原生库（arm64-v8a）
  └─ src/main/res/         图标、图片等资源
 pwa/                     iPhone 可用的 PWA 版（见 pwa/README.md）
+docs/screenshots/        界面截图（见上方「界面预览」）
 gradle/                  版本目录（libs.versions.toml）与 wrapper
 ```
 
@@ -34,7 +61,10 @@ gradle/                  版本目录（libs.versions.toml）与 wrapper
 
 ```bat
 gradlew.bat assembleDebug
+gradlew.bat assembleRelease
 ```
+
+release 产物在 `app/build/outputs/apk/release/app-release.apk`，即 Release 页里 `MY-music-v1.0.apk` 的来源。
 
 - 只打包 `arm64-v8a`：2017 年后的设备基本是 64 位，砍掉 v7a 可省约 55MB 原生库。要支持老设备，把 `armeabi-v7a` 加回 `abiFilters`。
 - release 用本机 `~/.android/debug.keystore` 签名，只为方便直接 `adb install`，不是上架用途。

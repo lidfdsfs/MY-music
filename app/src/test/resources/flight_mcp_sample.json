@@ -1,0 +1,66 @@
+{
+  "results": [
+    {
+      "airline": "Suparna Airlines",
+      "airline_code": "Y8",
+      "alliance": "",
+      "flight_numbers": ["Y87538"],
+      "is_direct": true,
+      "stops": 0,
+      "total_duration_minutes": 140,
+      "outbound": {
+        "departure": "CKG",
+        "arrival": "PVG",
+        "departure_time": "21:00",
+        "arrival_time": "23:20",
+        "departure_date": "2026-11-12",
+        "arrival_date": "2026-11-12",
+        "duration_minutes": 140,
+        "stops": 0,
+        "legs": [
+          {
+            "flight_number": "Y87538",
+            "carrier": "Y8",
+            "aircraft": "B738"
+          }
+        ]
+      },
+      "price": 721.57,
+      "currency": "CNY",
+      "baggage": "No checked bag",
+      "booking_url": "https://mcp.octotrip.app/flights/r/example?u=affiliate",
+      "link_type": "affiliate"
+    },
+    {
+      "airline": "Spring Airlines",
+      "airline_code": "9C",
+      "alliance": "",
+      "flight_numbers": ["9C8868"],
+      "is_direct": true,
+      "stops": 0,
+      "total_duration_minutes": 150,
+      "outbound": {
+        "departure": "CKG",
+        "arrival": "PVG",
+        "departure_time": "22:20",
+        "arrival_time": "00:50",
+        "departure_date": "2026-11-12",
+        "arrival_date": "2026-11-13",
+        "duration_minutes": 150,
+        "stops": 0,
+        "legs": [
+          {
+            "flight_number": "9C8868",
+            "carrier": "9C",
+            "aircraft": "A320"
+          }
+        ]
+      },
+      "price": 737.05,
+      "currency": "CNY",
+      "baggage": "1 checked bag",
+      "booking_url": "https://mcp.octotrip.app/flights/r/example2?u=affiliate",
+      "link_type": "affiliate"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# 构建缓存与产物
+.gradle/
+.kotlin/
+build/
+captures/
+*.apk
+*.apks
+*.aab
+
+# 会话临时文件（截图、分享包）
+.screenshots/
+.trae-html-share-packages/

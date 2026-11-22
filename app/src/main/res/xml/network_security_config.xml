@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  全项目禁止明文 HTTP，不再给任何 IP / 域名开 cleartext 例外。
+  购票 MCP 两个域名强制 HTTPS + 只信任系统根证书，避免用户证书/中间人代理
+  在请求链路上替换响应。BackendApi 当前处于纯本地模式，不发请求；若以后恢复
+  云端，必须先给服务端配置 HTTPS 证书，不能退回明文。
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="false">mcp.pianam.cn</domain>
+        <domain includeSubdomains="false">mcp.octotrip.app</domain>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+
+    <!--
+      局域网联调专用：只对本机这两个调试地址放开明文 HTTP（生产域名仍强制 HTTPS）。
+      换机器/换网段后地址会变，必须同步改这里和 CloudConfig.SERVER_URL；
+      正式发布前请整段删除，恢复“全项目禁明文”。
+    -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">192.168.0.142</domain>
+        <domain includeSubdomains="false">192.168.137.1</domain>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+</network-security-config>

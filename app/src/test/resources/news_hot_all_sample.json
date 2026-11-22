@@ -1,0 +1,35 @@
+{
+  "updated_at": "2026-11-11 23:21",
+  "platforms": {
+    "zhihu": [
+      {
+        "rank": 1,
+        "title": "知乎热榜问题",
+        "hot": 123456,
+        "url": "https://www.zhihu.com/question/1"
+      }
+    ],
+    "weibo": [
+      {
+        "rank": 1,
+        "title": "正午阳光这是什么意思",
+        "hot": 1611483,
+        "url": "https://s.weibo.com/weibo?q=test"
+      },
+      {
+        "rank": 2,
+        "title": "彩票店主私兑825万奖金全家被起诉",
+        "hot": 891632,
+        "url": "https://s.weibo.com/weibo?q=test2"
+      }
+    ],
+    "unknown_board": [
+      {
+        "rank": 1,
+        "title": "一个未识别的平台",
+        "hot": 10,
+        "url": "https://example.com/item"
+      }
+    ]
+  }
+}

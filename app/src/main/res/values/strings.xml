@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">MY音乐</string>
+
+    <!-- 系统小组件选择器里显示的名字：来自 receiver 的 android:label，不是应用名 -->
+    <string name="widget_name_stats">足迹统计</string>
+    <string name="widget_name_music">音乐播放</string>
+    <string name="widget_name_today">今日足迹</string>
+    <string name="widget_name_weather">天气与行程</string>
+    <string name="widget_name_quote">旅行语录</string>
+    <string name="widget_name_departure">出发倒计时</string>
+    <string name="widget_name_city_map">点亮城市</string>
+    <string name="widget_name_monthly">本月足迹</string>
+    <string name="widget_name_guide">推荐攻略</string>
+    <string name="widget_name_capture">拍照即定位</string>
+    <string name="widget_name_course">今日课表</string>
+
+    <string name="widget_desc_stats">足迹总数、城市数与最近足迹</string>
+    <string name="widget_desc_music">黑胶封面与播放控制</string>
+    <string name="widget_desc_today">今日足迹完成度圆环</string>
+    <string name="widget_desc_weather">天气、行程倒计时与近半年足迹</string>
+    <string name="widget_desc_quote">每日旅行语录</string>
+    <string name="widget_desc_departure">最近一趟行程的出发倒计时</string>
+    <string name="widget_desc_map">已点亮城市地图</string>
+    <string name="widget_desc_monthly">本月足迹柱状图</string>
+    <string name="widget_desc_guide">推荐旅行攻略</string>
+    <string name="widget_desc_capture">一键拍照记录足迹</string>
+    <string name="widget_desc_course">今日课程、当前/下一节课与教室，半透明卡片可自由调整大小</string>
+</resources>

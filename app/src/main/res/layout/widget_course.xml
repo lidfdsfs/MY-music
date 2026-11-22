@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  课表小组件：图二那种「透出壁纸」的半透明克制卡片。
+  - 顶部大日期（月/日，日用强调色）+ 星期与今日节数
+  - 中间只突出一节「正在上 / 下一节」的课，拉高后才按空间追加后续课程
+  - 底部圆点表示今天有几节课，当前那节高亮
+  所有文案与配色都在 CourseWidgetProvider 运行期写入（RemoteViews 不走 values-en）；
+  行数、附加信息由 renderSized 按实际尺寸决定，永远不会把内容顶出卡片被裁切。
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/widget_course_glass"
+    android:padding="16dp">
+
+    <!-- 顶部：日期 + 星期/节数 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="bottom">
+            <TextView
+                android:id="@+id/widget_course_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="11/"
+                android:textColor="#FF1F2328"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:includeFontPadding="false" />
+            <TextView
+                android:id="@+id/widget_course_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9"
+                android:textColor="#FFC1624A"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:includeFontPadding="false" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="end">
+            <TextView
+                android:id="@+id/widget_course_weekday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="周一"
+                android:textColor="#FF1F2328"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/widget_course_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="1 节课"
+                android:textColor="#FF5F666E"
+                android:textSize="10sp"
+                android:maxLines="1" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/widget_course_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/widget_course_line" />
+
+    <!-- 主推的一节课：正在上 > 下一节 > 今天第一节 -->
+    <LinearLayout
+        android:id="@+id/widget_course_primary_block"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <FrameLayout
+                android:id="@+id/widget_course_primary_dot"
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/widget_dot" />
+            <TextView
+                android:id="@+id/widget_course_primary_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="弹性力学 A"
+                android:textColor="#FF1F2328"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
+            <TextView
+                android:id="@+id/widget_course_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="下一节"
+                android:textColor="#FFC1624A"
+                android:textSize="10sp"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/widget_course_primary_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="4dp"
+            android:text="10:00–11:25"
+            android:textColor="#FF5F666E"
+            android:textSize="11sp"
+            android:maxLines="1" />
+        <TextView
+            android:id="@+id/widget_course_primary_loc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="2dp"
+            android:text="20415"
+            android:textColor="#FF9AA0A6"
+            android:textSize="11sp"
+            android:maxLines="1"
+            android:ellipsize="end" />
+    </LinearLayout>
+
+    <!-- 空态 -->
+    <TextView
+        android:id="@+id/widget_course_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="今天没课，好好休息"
+        android:textColor="#FF5F666E"
+        android:textSize="13sp"
+        android:visibility="gone" />
+
+    <!-- 后续课程：只有卡片被拉高时才逐行放开，行数由 renderSized 决定 -->
+    <LinearLayout android:id="@+id/widget_course_more1"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:layout_marginTop="10dp" android:visibility="gone">
+        <TextView android:id="@+id/widget_course_more1_time" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="14:00" android:textColor="#FF9AA0A6" android:textSize="10sp" android:maxLines="1" />
+        <TextView android:id="@+id/widget_course_more1_name" android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:layout_marginStart="8dp" android:text="数据结构"
+            android:textColor="#FF1F2328" android:textSize="12sp" android:maxLines="1" android:ellipsize="end" />
+        <TextView android:id="@+id/widget_course_more1_loc" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginStart="6dp" android:text="实验楼" android:textColor="#FF9AA0A6" android:textSize="10sp" android:maxLines="1" />
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/widget_course_more2"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:layout_marginTop="8dp" android:visibility="gone">
+        <TextView android:id="@+id/widget_course_more2_time" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="16:00" android:textColor="#FF9AA0A6" android:textSize="10sp" android:maxLines="1" />
+        <TextView android:id="@+id/widget_course_more2_name" android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:layout_marginStart="8dp" android:text="大学英语"
+            android:textColor="#FF1F2328" android:textSize="12sp" android:maxLines="1" android:ellipsize="end" />
+        <TextView android:id="@+id/widget_course_more2_loc" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginStart="6dp" android:text="外语楼" android:textColor="#FF9AA0A6" android:textSize="10sp" android:maxLines="1" />
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/widget_course_more3"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:layout_marginTop="8dp" android:visibility="gone">
+        <TextView android:id="@+id/widget_course_more3_time" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="19:00" android:textColor="#FF9AA0A6" android:textSize="10sp" android:maxLines="1" />
+        <TextView android:id="@+id/widget_course_more3_name" android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:layout_marginStart="8dp" android:text="体育锻炼"
+            android:textColor="#FF1F2328" android:textSize="12sp" android:maxLines="1" android:ellipsize="end" />
+        <TextView android:id="@+id/widget_course_more3_loc" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginStart="6dp" android:text="体育馆" android:textColor="#FF9AA0A6" android:textSize="10sp" android:maxLines="1" />
+    </LinearLayout>
+
+    <!-- 弹性占位：把底部圆点推到卡片下沿，内容再矮也不会挤成一团 -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- 底部：今日课程指示点 + 周次 -->
+    <LinearLayout
+        android:id="@+id/widget_course_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <FrameLayout android:id="@+id/widget_course_dot1" android:layout_width="5dp" android:layout_height="5dp" android:layout_marginEnd="4dp" android:background="@drawable/widget_dot" />
+            <FrameLayout android:id="@+id/widget_course_dot2" android:layout_width="5dp" android:layout_height="5dp" android:layout_marginEnd="4dp" android:background="@drawable/widget_course_dot_muted_light" />
+            <FrameLayout android:id="@+id/widget_course_dot3" android:layout_width="5dp" android:layout_height="5dp" android:layout_marginEnd="4dp" android:background="@drawable/widget_course_dot_muted_light" />
+            <FrameLayout android:id="@+id/widget_course_dot4" android:layout_width="5dp" android:layout_height="5dp" android:layout_marginEnd="4dp" android:background="@drawable/widget_course_dot_muted_light" />
+            <FrameLayout android:id="@+id/widget_course_dot5" android:layout_width="5dp" android:layout_height="5dp" android:background="@drawable/widget_course_dot_muted_light" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/widget_course_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="第 12 周"
+            android:textColor="#FF9AA0A6"
+            android:textSize="10sp"
+            android:maxLines="1" />
+    </LinearLayout>
+
+</LinearLayout>

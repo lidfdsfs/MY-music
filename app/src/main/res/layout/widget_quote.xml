@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_card"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/widget_quote_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|start"
+        android:fontFamily="cursive"
+        android:lineSpacingExtra="6dp"
+        android:text="身体和灵魂，\n总有一个在路上"
+        android:textColor="#FF1F2328"
+        android:textSize="25sp"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/widget_quote_sign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:text="MY足迹"
+        android:textColor="#FF9AA0A6"
+        android:textSize="9sp" />
+
+    <ImageView
+        android:id="@+id/widget_quote_foot"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_gravity="bottom|end"
+        android:contentDescription="@string/app_name"
+        android:scaleType="fitCenter" />
+
+</FrameLayout>

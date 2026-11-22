@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  课表卡默认 2x2：图二那种小卡，不再用 4x3 的大白卡。
+  内容由 CourseWidgetProvider.renderSized 按桌面实际宽高自适应，
+  拉大到 4x3 会逐条追加后续课程，缩小到 1 行高也会自动收掉次要信息，不会裁切。
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="150dp"
+    android:minHeight="160dp"
+    android:minResizeWidth="110dp"
+    android:minResizeHeight="110dp"
+    android:targetCellWidth="2"
+    android:targetCellHeight="2"
+    android:updatePeriodMillis="1800000"
+    android:initialLayout="@layout/widget_course"
+    android:previewImage="@drawable/widget_preview_course"
+    android:previewLayout="@layout/widget_course"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen"
+    android:description="@string/widget_desc_course" />

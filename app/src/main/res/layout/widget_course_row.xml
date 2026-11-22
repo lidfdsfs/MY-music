@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/row_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="@drawable/widget_course_row_bg"
+    android:padding="10dp"
+    android:layout_marginBottom="8dp">
+
+    <!-- 左侧彩色序号条 -->
+    <View
+        android:id="@+id/row_bar"
+        android:layout_width="6dp"
+        android:layout_height="40dp"
+        android:background="#FF2DD4BF" />
+
+    <!-- 时间 -->
+    <TextView
+        android:id="@+id/row_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="08:30–10:00"
+        android:textColor="#FFFFFFFF"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <!-- 课程名 -->
+    <TextView
+        android:id="@+id/row_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:text="高等数学"
+        android:textColor="#FFFFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:ellipsize="end" />
+
+    <!-- 地点 -->
+    <TextView
+        android:id="@+id/row_loc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="教学楼"
+        android:textColor="#CCFFFFFF"
+        android:textSize="12sp"
+        android:maxLines="1" />
+
+    <!-- 老师 -->
+    <TextView
+        android:id="@+id/row_teacher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="王老师"
+        android:textColor="#CCFFFFFF"
+        android:textSize="12sp"
+        android:maxLines="1" />
+
+    <!-- 状态标签 -->
+    <TextView
+        android:id="@+id/row_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:padding="4dp"
+        android:text="待开始"
+        android:textColor="#FFFFFFFF"
+        android:textSize="11sp"
+        android:background="#FF6366F1" />
+
+</LinearLayout>

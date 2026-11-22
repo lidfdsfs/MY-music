@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 分享长图用的临时文件 -->
+    <cache-path name="shared_images" path="images/" />
+    <!-- 数据导出备份用的 JSON 文件 -->
+    <cache-path name="backup" path="backup/" />
+    <!-- 发布页拍照：系统相机写入的临时文件 -->
+    <cache-path name="camera" path="camera/" />
+    <!-- Android 9 及以下保存长图的应用私有 Pictures 目录 -->
+    <external-files-path name="pictures" path="Pictures/" />
+    <!-- AI 创作专区的图片/视频原文件，打开视频时走 FileProvider -->
+    <files-path name="ai_creations" path="ai_creations/" />
+</paths>

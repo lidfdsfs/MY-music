@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#31C27C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MY音乐">
+<title>MY音乐</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 顶部 -->
+<header class="topbar">
+  <div class="topbar-title" id="pageTitle">搜索</div>
+  <div class="searchbox" id="searchBox">
+    <svg viewBox="0 0 24 24" class="ico"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg>
+    <input id="searchInput" type="search" placeholder="搜索歌曲、歌手" autocomplete="off" enterkeyhint="search">
+    <button id="searchClear" class="clearbtn" hidden>×</button>
+  </div>
+</header>
+
+<main id="main">
+  <!-- 搜索页 -->
+  <section id="page-search" class="page active">
+    <div id="historyWrap" class="chips" hidden></div>
+    <div id="searchHint" class="hint">输入歌名或歌手开始搜索</div>
+    <div id="searchLoading" class="loading" hidden><span class="spinner"></span>搜索中…</div>
+    <div id="searchList" class="list"></div>
+  </section>
+
+  <!-- 收藏页 -->
+  <section id="page-fav" class="page">
+    <div class="rowbar">
+      <span id="favCount" class="muted">0 首</span>
+      <button id="favPlayAll" class="pillbtn">播放全部</button>
+    </div>
+    <div id="favList" class="list"></div>
+    <div id="favEmpty" class="empty">还没有收藏<br>搜索后点 ♥ 即可收藏</div>
+  </section>
+
+  <!-- 导入页 -->
+  <section id="page-import" class="page">
+    <div class="card">
+      <div class="card-title">粘贴歌单导入</div>
+      <div class="muted small">每行一首「歌名 - 歌手」，无需登录，最稳的方式</div>
+      <textarea id="pasteText" placeholder="晴天 - 周杰伦&#10;稻香 - 周杰伦"></textarea>
+      <div class="row-end"><button id="pasteImport" class="pillbtn primary">导入</button></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">网易云音乐</div>
+      <div class="muted small">在网易云网页版登录后，复制 Cookie 粘进来</div>
+      <textarea id="ncCookie" class="mono" placeholder="MUSIC_U=...; __csrf=..."></textarea>
+      <div class="row-between">
+        <button id="ncLoad" class="pillbtn">读取歌单</button>
+        <button id="ncClear" class="pillbtn ghost">清除</button>
+      </div>
+      <div id="ncList" class="mini-list"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">QQ 音乐</div>
+      <div class="muted small">在 QQ 音乐网页版登录后，复制 Cookie 粘进来</div>
+      <textarea id="qqCookie" class="mono" placeholder="uin=o1234567890; qm_keyst=..."></textarea>
+      <div class="row-between">
+        <button id="qqLoad" class="pillbtn">读取歌单</button>
+        <button id="qqClear" class="pillbtn ghost">清除</button>
+      </div>
+      <div id="qqList" class="mini-list"></div>
+    </div>
+  </section>
+
+  <!-- 设置页 -->
+  <section id="page-settings" class="page">
+    <div class="card">
+      <div class="card-title">接口地址（自行填写）</div>
+      <div class="muted small">本应用不内置任何接口与 AI 能力。请填写你自己部署的接口服务地址（参考 README 用 worker.js 自建），留空则无法搜索和播放在线歌曲。</div>
+      <input id="apiUrl" type="url" class="textinput" placeholder="https://你的服务地址">
+      <div class="row-end"><button id="saveApi" class="pillbtn primary">保存</button></div>
+    </div>
+    <div class="card">
+      <div class="card-title">偏好</div>
+      <label class="switchrow">
+        <span>播放后自动下一首</span>
+        <input id="autoNext" type="checkbox" checked>
+      </label>
+    </div>
+    <div class="card">
+      <div class="card-title">数据</div>
+      <div class="row-between">
+        <span class="muted small">收藏、历史存在本机</span>
+        <button id="clearData" class="pillbtn ghost">清空数据</button>
+      </div>
+    </div>
+    <div class="muted small center" style="padding:16px 0">MY音乐 PWA · v1.0</div>
+  </section>
+</main>
+
+<!-- 底部导航 -->
+<nav class="tabbar">
+  <button class="tab active" data-tab="search"><span class="tab-ico">🔍</span><span>搜索</span></button>
+  <button class="tab" data-tab="fav"><span class="tab-ico">♥</span><span>收藏</span></button>
+  <button class="tab" data-tab="import"><span class="tab-ico">⤓</span><span>导入</span></button>
+  <button class="tab" data-tab="settings"><span class="tab-ico">⚙</span><span>设置</span></button>
+</nav>
+
+<!-- mini player -->
+<div id="miniBar" class="mini" hidden>
+  <img id="miniCover" class="mini-cover" alt="">
+  <div class="mini-info">
+    <div id="miniTitle" class="mini-title">—</div>
+    <div id="miniArtist" class="mini-artist">—</div>
+  </div>
+  <button id="miniPlay" class="iconbtn">▶</button>
+  <button id="miniNext" class="iconbtn">⏭</button>
+</div>
+
+<!-- 全屏播放 -->
+<div id="playerPage" class="player" hidden>
+  <div class="player-bg" id="playerBg"></div>
+  <div class="player-top">
+    <button id="playerBack" class="iconbtn">⌄</button>
+    <div class="player-top-title">正在播放</div>
+    <button id="playerMore" class="iconbtn">⋯</button>
+  </div>
+  <img id="playerCover" class="player-cover" alt="">
+  <div class="player-meta">
+    <div id="playerTitle" class="player-title">—</div>
+    <div id="playerArtist" class="player-artist">—</div>
+  </div>
+  <div class="player-lyric" id="playerLyric">—</div>
+  <div class="player-progress">
+    <span id="tCur">0:00</span>
+    <input id="seek" type="range" min="0" max="1000" value="0">
+    <span id="tDur">0:00</span>
+  </div>
+  <div class="player-controls">
+    <button id="prevBtn" class="iconbtn big">⏮</button>
+    <button id="playBtn" class="iconbtn play">▶</button>
+    <button id="nextBtn" class="iconbtn big">⏭</button>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<audio id="audio" preload="none"></audio>
+<script src="app.js"></script>
+</body>
+</html>

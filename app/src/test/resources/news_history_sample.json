@@ -1,0 +1,24 @@
+{
+  "code": 200,
+  "data": {
+    "date": "11-11",
+    "month": 11,
+    "day": 11,
+    "items": [
+      {
+        "title": "独立葡萄牙第二位国王桑乔一世出生",
+        "year": "1154",
+        "description": "桑乔一世是葡萄牙王国的建立者阿方索一世的儿子。",
+        "event_type": "birth",
+        "link": "https://baike.baidu.com/item/桑乔一世"
+      },
+      {
+        "title": "第一次世界大战结束",
+        "year": "1918",
+        "description": "1918年11月11日，德国与协约国签署停战协定。",
+        "event_type": "event",
+        "link": "https://baike.baidu.com/item/第一次世界大战"
+      }
+    ]
+  }
+}

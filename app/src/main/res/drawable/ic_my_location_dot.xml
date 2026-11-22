@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 当前位置蓝点：白色描边 + 蓝色实心，压在任何底图上都能看清 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="22dp"
+    android:height="22dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M2,12 a10,10 0 1,0 20,0 a10,10 0 1,0 -20,0 Z" />
+    <path
+        android:fillColor="#FF1A73E8"
+        android:pathData="M5,12 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 Z" />
+</vector>

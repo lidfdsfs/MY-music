@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 只给系统小组件选择器的 receiver label 用：Manifest 资源跟随系统 locale，
+     App 内 UI 文案仍走运行期 tr(zh, en)，不受这里影响。 -->
+<resources>
+    <string name="widget_name_stats">Footprint stats</string>
+    <string name="widget_name_music">Music player</string>
+    <string name="widget_name_today">Daily trace</string>
+    <string name="widget_name_weather">Weather and trips</string>
+    <string name="widget_name_quote">Travel quote</string>
+    <string name="widget_name_departure">Trip countdown</string>
+    <string name="widget_name_city_map">Cities lit up</string>
+    <string name="widget_name_monthly">Monthly trace</string>
+    <string name="widget_name_guide">Featured guide</string>
+    <string name="widget_name_capture">Snap to pin</string>
+    <string name="widget_name_course">Today\'s classes</string>
+    <string name="widget_desc_course">Today\'s classes, current/up next and room, in a resizable translucent card</string>
+</resources>

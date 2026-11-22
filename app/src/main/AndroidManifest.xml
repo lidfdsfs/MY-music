@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 自动记录轨迹：锁屏 / 切后台时靠 location 型前台服务维持定位（Android 14+ 必须单独声明） -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <!-- 私信实时接收：remoteMessaging 型前台服务，Android 14+ 必须单独声明 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- 横屏播放器「闪光灯跟节奏闪」：控制手电筒 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 4D 震动 / 播放节拍触感 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 同行人：从通讯录导入姓名 -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <!-- 相册权限：Android 13+ READ_MEDIA_IMAGES，旧版 READ_EXTERNAL_STORAGE -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="READ_MEDIA_IMAGES" />
+    <!-- 音乐播放器：扫描本机音频文件 -->
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <!-- 仅 Android 9 及以下保存长图需要；10 起走 MediaStore，免权限 -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+    <!-- Android 13+ 通知运行时权限（行程提醒）；已声明才能在 PlanSheet 请求 -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- 桌面歌词：悬浮窗 + 前台服务（Android 14+ 需要 specialUse 类型） -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <!-- 开机后恢复 WorkManager 任务（系统清理进程后提醒队列可能丢失，需要自启重建） -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!--
+        Android 11+ 包可见性：不显式声明这两个 intent，
+        系统就不让本应用看见语音识别服务与 TTS 引擎——
+        结果是 SpeechRecognizer.isRecognitionAvailable() 恒为 false（语音按钮直接消失），
+        TextToSpeech 也可能拿不到引擎（朗读无声）。这是「语音全都不好使」的根因之一。
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
+    <application
+        android:name=".MyTraceApp"
+        android:allowBackup="false"
+        android:usesCleartextTraffic="false"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MY足迹">
+
+        <!-- OSMDroid / OpenStreetMap：免 Key，无需任何地图配置 -->
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.MY足迹"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboardHidden|density|uiMode|fontScale"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- 轨迹记录常驻前台服务：保证锁屏后仍在采点 -->
+        <service
+            android:name=".data.TrackForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
+        <!-- 桌面歌词悬浮窗：前台服务持有 TYPE_APPLICATION_OVERLAY -->
+        <service
+            android:name=".data.music.LyricOverlayService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="floating_lyrics" />
+        </service>
+
+        <!-- 私信实时接收：SSE 长连接 + 常驻低优先级通知，保证退后台/锁屏仍能收消息 -->
+        <service
+            android:name=".data.messaging.DmMessageService"
+            android:exported="false"
+            android:stopWithTask="false"
+            android:foregroundServiceType="remoteMessaging" />
+
+        <!-- 通知栏直接回复：用户不打开 App，也能在通知里回消息 -->
+        <receiver
+            android:name=".data.messaging.DmReplyReceiver"
+            android:exported="false" />
+
+        <!-- 开机恢复私信服务；用户主动退出登录后服务不会再启动 -->
+        <receiver
+            android:name=".data.messaging.DmBootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- 分享长图：Android 7+ 禁止 file:// 跨应用传递，必须走 content:// -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- 桌面小组件。android:label 是系统小组件选择器里显示的卡片名字，
+             不写就会全部退化成应用名「MY足迹」；预览图由各自 *_widget_info 的
+             android:previewImage 提供，两者一起才不会只剩应用图标。
+             注：receiver 不能加 BIND_APPWIDGET 权限——App 自己用 ACTION_REFRESH
+             显式广播刷新卡片，加权限会连自己的广播一起拦掉。 -->
+        <receiver
+            android:name=".FootprintWidgetProvider"
+            android:label="@string/widget_name_stats"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/footprint_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".MusicWidgetProvider"
+            android:label="@string/widget_name_music"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/music_widget_info" />
+        </receiver>
+
+        <!-- 设计稿 8 张新卡片：每张独立 provider，系统小组件列表里可分别添加 -->
+        <receiver
+            android:name=".widget.TodayWidgetProvider"
+            android:label="@string/widget_name_today"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/today_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".widget.WeatherWidgetProvider"
+            android:label="@string/widget_name_weather"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/weather_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".widget.QuoteWidgetProvider"
+            android:label="@string/widget_name_quote"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/quote_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".widget.DepartureWidgetProvider"
+            android:label="@string/widget_name_departure"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/departure_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".widget.CityMapWidgetProvider"
+            android:label="@string/widget_name_city_map"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/city_map_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".widget.MonthlyWidgetProvider"
+            android:label="@string/widget_name_monthly"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/monthly_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".widget.GuideWidgetProvider"
+            android:label="@string/widget_name_guide"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/guide_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".widget.CaptureWidgetProvider"
+            android:label="@string/widget_name_capture"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/capture_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".widget.CourseWidgetProvider"
+            android:label="@string/widget_name_course"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/course_widget_info" />
+        </receiver>
+
+        <!-- 通知栏 / 锁屏 / 桌面小组件上的播放控制，统一走这一个接收器 -->
+        <receiver
+            android:name=".data.music.MusicControlReceiver"
+            android:exported="false" />
+    </application>
+
+</manifest>

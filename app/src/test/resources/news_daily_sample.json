@@ -1,0 +1,30 @@
+{
+  "code": 200,
+  "data": [
+    {
+      "name": "微博",
+      "key": "weibo",
+      "update_time": "2026-11-11 23:20",
+      "data": [
+        {
+          "rank": 1,
+          "title": "微博热搜第一条",
+          "hot": 1000000,
+          "url": "https://s.weibo.com/weibo?q=one"
+        }
+      ]
+    },
+    {
+      "name": "知乎",
+      "key": "zhihu",
+      "list": [
+        {
+          "rank": 1,
+          "title": "知乎热榜第一条",
+          "hot_value": 200000,
+          "link": "https://www.zhihu.com/question/2"
+        }
+      ]
+    }
+  ]
+}

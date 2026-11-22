@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -5,7 +7,7 @@ plugins {
 }
 
 // 本机配置（local.properties 不进仓库）：高德 Key 等敏感值由此注入 BuildConfig
-val localProps: java.util.Properties = java.util.Properties().also { props ->
+val localProps: Properties = Properties().also { props ->
     val f = rootProject.file("local.properties")
     if (f.exists()) f.inputStream().use { props.load(it) }
 }
